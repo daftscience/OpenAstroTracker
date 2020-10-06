@@ -60,7 +60,7 @@ public:
   }
 };
 
-// Performance measurement class 
+// Performance measurement class
 class PerfMeasure {
   unsigned long _start;
   unsigned long _end;
@@ -126,12 +126,12 @@ void logv(int levelFlags, String input, ...);
 
 #else // DEBUG_LEVEL>0
 
-#define LOGV1(level,a) 
-#define LOGV2(level,a,b) 
-#define LOGV3(level,a,b,c) 
-#define LOGV4(level,a,b,c,d) 
-#define LOGV5(level,a,b,c,d,e) 
-#define LOGV6(level,a,b,c,d,e,f) 
+#define LOGV1(level,a)
+#define LOGV2(level,a,b)
+#define LOGV3(level,a,b,c)
+#define LOGV4(level,a,b,c,d)
+#define LOGV5(level,a,b,c,d,e)
+#define LOGV6(level,a,b,c,d,e,f)
 #define LOGV7(level,a,b,c,d,e,f,g)
 
 #endif // DEBUG_LEVEL>0
@@ -179,10 +179,10 @@ private:
     _analogKeyValue = analogRead(_analogPin);
     if (_analogKeyValue > 1000) _currentKey = btnNONE;
     else if (_analogKeyValue < 50)   _currentKey = btnRIGHT;
-    else if (_analogKeyValue < 240)  _currentKey = btnUP;
-    else if (_analogKeyValue < 400)  _currentKey = btnDOWN;
-    else if (_analogKeyValue < 600)  _currentKey = btnLEFT;
-    else if (_analogKeyValue < 920)  _currentKey = btnSELECT;
+    else if (_analogKeyValue < 250)  _currentKey = btnUP;
+    else if (_analogKeyValue < 450)  _currentKey = btnDOWN;
+    else if (_analogKeyValue < 660)  _currentKey = btnLEFT;
+    else if (_analogKeyValue < 850)  _currentKey = btnSELECT;
 
     if (_currentKey != _lastKey) {
       _lastKey = _currentKey;
