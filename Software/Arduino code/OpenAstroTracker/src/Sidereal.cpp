@@ -1,5 +1,6 @@
-#if USE_GPS == 1
 #include "Sidereal.hpp"
+
+#if USE_GPS == 1
 
 // Constants for sidereal calculation       
 // Source: http://www.stargazing.net/kepler/altaz.html
@@ -9,7 +10,7 @@
 #define C4              -0.5125
 #define J2000           2000
 
-static DayTime Sidereal::calculateByGPS(TinyGPSPlus* gps){
+DayTime Sidereal::calculateByGPS(TinyGPSPlus* gps){
     DayTime timeUTC = DayTime(gps->time.hour(), gps->time.minute(), gps->time.second());
     //DayTime timeUTC = DayTime(14, 24, 11);
     int deltaJd = calculateDeltaJd(gps->date.year(), gps->date.month(), gps->date.day());
@@ -19,7 +20,7 @@ static DayTime Sidereal::calculateByGPS(TinyGPSPlus* gps){
     //return DayTime((float)(calculateTheta(deltaJ, 8.487581, timeUTC.getTotalHours()) / 15.0));
     }
 
-static const double Sidereal::calculateTheta(double deltaJ, double longitude, float timeUTC){
+const double Sidereal::calculateTheta(double deltaJ, double longitude, float timeUTC){
     double theta = C1;
     theta += C2 * deltaJ;
     theta += C3 * timeUTC;
@@ -28,7 +29,7 @@ static const double Sidereal::calculateTheta(double deltaJ, double longitude, fl
     return fmod(theta, 360.0);
 }
 
-static const int Sidereal::calculateDeltaJd(int year, int month, int day){
+const int Sidereal::calculateDeltaJd(int year, int month, int day){
     const int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     // Calculating days without leapdays
