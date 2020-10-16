@@ -9,6 +9,7 @@
 #include "EPROMStore.hpp"
 #include "inc/Config.hpp"
 
+
 LcdMenu lcdMenu(16, 2, MAXMENUITEMS);
 LcdButtons lcdButtons(0);
 
@@ -17,6 +18,8 @@ DRAM_ATTR Mount mount(RAStepsPerDegree, DECStepsPerDegree, &lcdMenu);
 #else
 Mount mount(RA_STEPS_PER_DEGREE, DEC_STEPS_PER_DEGREE, &lcdMenu);
 #endif
+
+#include "g_bluetooth.hpp"
 
 #ifdef WIFI_ENABLED
 #include "WifiControl.hpp"
@@ -64,6 +67,9 @@ void IRAM_ATTR mainLoopTask(void* payload)
 
   for (;;) {
     serialLoop();
+    #ifdef BLUETOOTH_ENABLED
+    BTin();
+    #endif
     vTaskDelay(1);
   }
 }
@@ -134,7 +140,9 @@ void setup() {
   // end microstepping -------------------
 
   Serial.begin(57600);
-  //BT.begin(9600);
+  #ifdef BLUETOOTH_ENABLED 
+  BLUETOOTH_SERIAL.begin("OpenAstroTracker");
+  #endif
 
   LOGV2(DEBUG_ANY, F("Hello, universe, this is OAT %s!"), VERSION);
 
@@ -227,7 +235,7 @@ void finishSetup()
     mount.configureDECStepper(HALFSTEP_MODE, DECmotorPin1, DECmotorPin2, DECmotorPin3, DECmotorPin4, RA_STEPPER_SPEED, DEC_STEPPER_ACCELERATION);
   #elif DEC_STEPPER_TYPE == STEPPER_TYPE_NEMA17
     LOGV1(DEBUG_ANY, F("Configure DEC stepper NEMA..."));
-    mount.configureDECStepper(DRIVER_MODE, DECmotorPin1, DECmotorPin2, RA_STEPPER_SPEED, DEC_STEPPER_ACCELERATION);
+    mount.configureDECStepper(DRIVER_MODE, DECmotorPin1, DECmotorPin2, DEC_STEPPER_SPEED, DEC_STEPPER_ACCELERATION);
   #else
     #error New stepper type? Configure it here.
   #endif
