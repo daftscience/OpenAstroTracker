@@ -2,6 +2,7 @@
 #define UTILITY_HPP_
 
 #include <Arduino.h>
+#include "LcdMenu.hpp"
 #include "../Configuration_adv.hpp"
 
 // LCD shield buttons
@@ -138,7 +139,8 @@ void logv(int levelFlags, String input, ...);
 
 class LcdButtons {
 public:
-  LcdButtons(byte pin) {
+  LcdButtons(byte pin, LcdMenu* lcdMenu) {
+    _lcdMenu = lcdMenu;
     _analogPin = pin;
     _lastKeyChange = 0;
 
@@ -176,13 +178,28 @@ public:
 
 private:
   void checkKey() {
+
+    #if DISPLAY_TYPE > 0
+    #if DISPLAY_TYPE == DISPLAY_TYPE_LCD_KEYPAD_I2C_MCP23008 || DISPLAY_TYPE == DISPLAY_TYPE_LCD_KEYPAD_I2C_MCP23017
+    uint8_t buttons = _lcdMenu->readButtons();
+    _currentKey = btnNONE;
+    if (buttons)
+    {
+      if (buttons & BUTTON_UP) _currentKey = btnUP;
+      if (buttons & BUTTON_DOWN) _currentKey = btnDOWN;
+      if (buttons & BUTTON_LEFT) _currentKey = btnLEFT;
+      if (buttons & BUTTON_RIGHT) _currentKey = btnRIGHT;
+      if (buttons & BUTTON_SELECT) _currentKey = btnSELECT;
+    }
+    #else
     _analogKeyValue = analogRead(_analogPin);
     if (_analogKeyValue > 1000) _currentKey = btnNONE;
     else if (_analogKeyValue < 50)   _currentKey = btnRIGHT;
-    else if (_analogKeyValue < 250)  _currentKey = btnUP;
-    else if (_analogKeyValue < 450)  _currentKey = btnDOWN;
-    else if (_analogKeyValue < 660)  _currentKey = btnLEFT;
-    else if (_analogKeyValue < 850)  _currentKey = btnSELECT;
+    else if (_analogKeyValue < 240)  _currentKey = btnUP;
+    else if (_analogKeyValue < 400)  _currentKey = btnDOWN;
+    else if (_analogKeyValue < 600)  _currentKey = btnLEFT;
+    else if (_analogKeyValue < 920)  _currentKey = btnSELECT;
+    #endif
 
     if (_currentKey != _lastKey) {
       _lastKey = _currentKey;
@@ -194,6 +211,7 @@ private:
         _newKey = _currentKey;
       }
     }
+    #endif
   }
 
 private:
@@ -205,6 +223,7 @@ private:
   byte _newKey;
   byte _lastNewKey;
   byte _currentKey;
+  LcdMenu* _lcdMenu;
 };
 
 

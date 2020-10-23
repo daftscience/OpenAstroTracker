@@ -16,7 +16,7 @@
 #include "f_serial.hpp"
 #endif
 
-#if HEADLESS_CLIENT == 0
+#if DISPLAY_TYPE > 0
 
   int loopsOfSameKey = 0;
   int lastLoopKey = -1;
@@ -115,11 +115,6 @@
           case HA_Menu:
           waitForButtonRelease = processHAKeys();
           break;
-  #if SUPPORT_HEATING == 1
-          case Heat_Menu:
-          waitForButtonRelease = processHeatKeys();
-          break;
-  #endif
 
   #if SUPPORT_CALIBRATION == 1
           case Calibration_Menu:
@@ -189,11 +184,6 @@
           else if (activeMenu == HA_Menu) {
             printHASubmenu();
           }
-  #if SUPPORT_HEATING == 1
-          else if (activeMenu == Heat_Menu) {
-            printHeatSubmenu();
-          }
-  #endif
   #if SUPPORT_MANUAL_CONTROL == 1
           else if (activeMenu == Control_Menu) {
             printControlSubmenu();

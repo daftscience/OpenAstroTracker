@@ -11,7 +11,7 @@
 
 
 LcdMenu lcdMenu(16, 2, MAXMENUITEMS);
-LcdButtons lcdButtons(0);
+LcdButtons lcdButtons(0, &lcdMenu);
 
 #ifdef ESP32
 DRAM_ATTR Mount mount(RAStepsPerDegree, DECStepsPerDegree, &lcdMenu);
@@ -184,6 +184,11 @@ void setup() {
 
 void finishSetup()
 {
+  // Calling the LCD startup here, I2C can't be found if called earlier
+  #if DISPLAY_TYPE > 0
+    lcdMenu.startup();
+  #endif
+
   LOGV1(DEBUG_ANY, F("Finishing setup..."));
   // Show a splash screen
   lcdMenu.setCursor(0, 0);
@@ -191,7 +196,7 @@ void finishSetup()
   lcdMenu.setCursor(5, 1);
   lcdMenu.printMenu(VERSION);
 
-  #if HEADLESS_CLIENT == 0
+  #if DISPLAY_TYPE > 0
     // Check for EEPROM reset (Button down during boot)
     if (lcdButtons.currentState() == btnDOWN){
       LOGV1(DEBUG_INFO, F("Erasing configuration in EEPROM!"));
@@ -278,7 +283,7 @@ void finishSetup()
   LOGV1(DEBUG_ANY, F("Start Tracking..."));
   mount.startSlewing(TRACKING);
 
-  #if HEADLESS_CLIENT == 0
+  #if DISPLAY_TYPE > 0
     LOGV1(DEBUG_ANY, F("Setup menu system..."));
 
     // Create the LCD top-level menu items
@@ -292,10 +297,6 @@ void finishSetup()
     #endif
 
     lcdMenu.addItem("HA", HA_Menu);
-
-    #if SUPPORT_HEATING == 1
-      lcdMenu.addItem("HEA", Heat_Menu);
-    #endif
 
     #if SUPPORT_MANUAL_CONTROL == 1
       lcdMenu.addItem("CTRL", Control_Menu);
@@ -315,7 +316,7 @@ void finishSetup()
 
     LOGV1(DEBUG_ANY, F("Update display..."));
     lcdMenu.updateDisplay();
-  #endif // not HEADLESS_CLIENT
+  #endif // DISPLAY_TYPE > 0
 
   mount.bootComplete();
   LOGV1(DEBUG_ANY, F("Setup done!"));

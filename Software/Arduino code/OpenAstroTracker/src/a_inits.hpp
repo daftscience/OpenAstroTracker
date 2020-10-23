@@ -1,7 +1,7 @@
 #pragma once
 
 #include <AccelStepper.h>
-#if HEADLESS_CLIENT == 0
+#if DISPLAY_TYPE > 0
 #include <LiquidCrystal.h>
 #endif
 #include "inc/Globals.hpp"
@@ -115,9 +115,6 @@ bool inStartup = false;        // Start with a guided startup
 bool inSerialControl = false; // When the serial port is in control
 bool quitSerialOnNextButtonRelease = false; // Used to detect SELECT button to quit Serial mode.
 
-//// Variables for use in the CONTROL menu
-bool inControlMode = false;  // Is manual control enabled
-
 // Global variables
 bool isUnreachable = false;
 
@@ -129,15 +126,6 @@ int DECselect;
 
 // HA variables
 int HAselect;
-
-#if SUPPORT_HEATING == 1
-// HEAT menu variables
-int heatselect;   // Which stepper are we changing?
-int RAheat = 0;   // Are we heating the RA stepper?
-int DECheat = 0;  // Are we heating the DEC stepper?
-#endif
-
-
 
 //debugging
 String inBT;
