@@ -193,12 +193,12 @@ private:
     }
     #else
     _analogKeyValue = analogRead(_analogPin);
-    if (_analogKeyValue > 1000) _currentKey = btnNONE;
-    else if (_analogKeyValue < 50)   _currentKey = btnRIGHT;
-    else if (_analogKeyValue < 240)  _currentKey = btnUP;
-    else if (_analogKeyValue < 400)  _currentKey = btnDOWN;
-    else if (_analogKeyValue < 600)  _currentKey = btnLEFT;
-    else if (_analogKeyValue < 920)  _currentKey = btnSELECT;
+      if (_analogKeyValue > 1000) _currentKey = btnNONE;
+      else if (_analogKeyValue < 50)   _currentKey = btnRIGHT;
+      else if (_analogKeyValue < 250)  _currentKey = btnUP;
+      else if (_analogKeyValue < 450)  _currentKey = btnDOWN;
+      else if (_analogKeyValue < 660)  _currentKey = btnLEFT;
+      else if (_analogKeyValue < 850)  _currentKey = btnSELECT;
     #endif
 
     if (_currentKey != _lastKey) {
